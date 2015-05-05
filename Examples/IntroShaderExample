@@ -1,0 +1,77 @@
+/**
+ * Multiply each vertex by the
+ * model-view matrix and the
+ * projection matrix (both provided
+ * by Three.js) to get a final
+ * vertex position
+ */
+void main() {
+  gl_Position = projectionMatrix *
+                modelViewMatrix *
+                vec4(position,1.0);
+}
+
+
+/**
+ * Assume we have jQuery to hand
+ * and pull out from the DOM the
+ * two snippets of text for
+ * each of our shaders
+ */
+var vShader = $('vertexshader');
+var fShader = $('fragmentshader');
+var shaderMaterial =
+  new THREE.ShaderMaterial({
+    vertexShader:   vShader.text(),
+    fragmentShader: fShader.text()
+  });
+
+
+  Vertex Shaders — Our mesh is made up of lots of triangles. Each corner of a triangle is called a vertex. The vertex shader has access to all of the attributes of each vertex, like position and color, letting us move triangles around or change their color.
+
+  Fragment Shaders — Also known as pixel shaders, these shaders are like filters on individual pixels. They let you work with pixels to add lighting effects or add postprocessing effects like blur or edge-detection.
+
+
+  //WebGL and shaders do not do computations so we have to trick it to do computations.
+
+  We take this image which we reference all the pixels and then we do some sort of computation using the complex parser that I wrote.
+  From there we take the numbers and we reference it back to the image and grab the pixels. Aka a fragment shader and for every pixel it grabs the input from the source image --> output which is then some other texture which is the result. We could also print out all the numbers. This is in parrell that like nobody has done before. Because WebCL is not available yet we aren't using webCL
+
+  Single instruction multiple data --> Way different than CPU Parrellization
+  	2 big arrays --> iterate and add all the corresponding values.
+  		--> In CPU we would do a for loop add them togetehr and add it up
+  			--> Memory read to populate reg A
+  			--> Memory read to populate reg B
+  			--> Add them together create reg C and write out reg C
+  					--> If big enough this is super slow (aka old code)
+
+  		Multiple independent threads for parrell
+
+  On GPU
+  	Single operation at once because hardware is very limited. Concurrent registers. We could have 32 single Reg A, 32 single reg B. So now we don't have a for loop. 
+
+  	Simulated groups of 32: (simultaneous)
+
+  	regA = read(array1, pos) --> Single memory read
+  	regB = read(array2, pos) --> single memory read
+  	regC = regA + regB --> single addition to add all the A's and B's
+  	write(output, pos, regC) --> single memory write
+
+  	Within each group of "thread" (set of register, threads are independent in CPU but in GPU it means 1 operation can operate over multiple data points)
+
+  	if() {
+
+  	} else -> is terrible for GPU performance.
+
+  	Texture reads = minimize because we have to branch. Fetch form similar location for cache performance. 
+  	Break into small pieces so we don't block up a shader. 
+
+  	Why is branching bad: 
+  		Single instruction multiple data. Rendering a square of data. 1 single instruction pointer is going through many pixels simultaneously. Some are true and some are false... some threads want to go one way and some want to go the other way. It's not really possible
+  		so the GPU runs the if and then the else. Just enables the treads that are there and then threads that aren't. Instead of 1 path its going to have to follow every single path. Which is terrible.
+
+  		If they all take the same path there is no cost. If some go one way and some the other then its expensive. Near edge its more expensive.
+
+
+
+
