@@ -22,7 +22,12 @@ class SquareContext {
     }
 
     update(image) {
-        this.image = image ? THREE.ImageUtils.loadTexture( image ) : THREE.ImageUtils.generateDataTexture( 1, 1, new THREE.Color( 0xff00ff ) );
+        if(image) {
+            this.image = THREE.ImageUtils.loadTexture( image );
+            this.image.minFilter = THREE.NearestFilter;
+        } else {
+            this.image = THREE.ImageUtils.generateDataTexture( 1, 1, new THREE.Color( 0xff00ff ) )
+        }
     }
 
     // TODO: When the input changes, only update material instead of recreating
