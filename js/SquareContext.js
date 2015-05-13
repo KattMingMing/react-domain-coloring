@@ -22,12 +22,8 @@ class SquareContext {
     }
 
     update(image) {
-        if(image) {
-            this.image = THREE.ImageUtils.loadTexture( image );
-            this.image.minFilter = THREE.NearestFilter;
-        } else {
-            this.image = THREE.ImageUtils.generateDataTexture( 1, 1, new THREE.Color( 0xff00ff ) )
-        }
+        this.image = image ? THREE.ImageUtils.loadTexture( image ) : THREE.ImageUtils.generateDataTexture( 1, 1, new THREE.Color( 0xff00ff ) );
+        this.image.minFilter = THREE.NearestFilter;
     }
 
     // TODO: When the input changes, only update material instead of recreating
@@ -50,7 +46,7 @@ class SquareContext {
 
         // set up square with the proper coloring
         this.square = new THREE.Mesh(
-            new THREE.PlaneGeometry(squareWidth, squareHeight),
+            new THREE.PlaneBufferGeometry(squareWidth, squareHeight),
             new THREE.ShaderMaterial({
                 uniforms: {
                     texture: { type: "t", value: this.image },
@@ -85,7 +81,7 @@ uniform vec2 domainX, domainY;
 // } 
 
 vec4 domcol(vec2 z) {
-    return texture2D(texture, z);
+    return texture2D(texture, z/(PI*2.0)+0.5);
 }
 
 float scale(float t, float start, float end) {

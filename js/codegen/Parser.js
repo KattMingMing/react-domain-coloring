@@ -11,6 +11,7 @@ var term = P.lazy(() =>
     P.alt(
         token('z').result(CExpr.Var()),
         token('i').result(CExpr.Constant(0, 1)),
+        token('e').result(CExpr.Constant(2.7182818284590452353602874713527, 0)),
         token('(').then(add_expr).skip(token(')')),
         P.regex(/-?[0-9][0-9]*(\.[0-9]+)?/).skip(ws)
             .map((n) => CExpr.Constant(parseFloat(n), 0))

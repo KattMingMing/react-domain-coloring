@@ -2,6 +2,7 @@ import React from 'react';
 import DomainColoring from '../DomainColoring';
 import Dropzone from 'react-dropzone';
 import ReactBootstrap from 'react-bootstrap';
+import ReactSelect from 'react-select';
 
 export default class Sandbox extends React.Component {
     constructor(props) {
@@ -235,7 +236,17 @@ export default class Sandbox extends React.Component {
             width: 500,
             height: 500
         }
-        
+
+        var Select = require('react-select');
+        var options = [
+            { value: 'one', label: 'One' },
+            { value: 'two', label: 'Two' }
+        ];
+
+        function logChange(val) {
+            console.log("Selected: " + val);
+        }
+                
         return (
             <div>
             <App />
